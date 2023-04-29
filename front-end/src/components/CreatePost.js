@@ -4,7 +4,7 @@ import Post from "../services/postServices";
 const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
-  const [image, setImage] = useState({ data: "" });
+  const [image, setImage] = useState("");
   const [message, setMessage] = useState("");
 
   const handleTitleChange = (event) => {
@@ -13,12 +13,9 @@ const CreatePost = () => {
   const handleDateChange = (event) => {
     setDate(event.target.value);
   };
-  const handleImageChange = (event) => {
-    const img = {
-      // preview: URL.createObjectURL(event.target.files[0]),
-      data: event.target.files[0],
-    };
-    setImage(img);
+   const handleImageChange = (event) => {
+    console.log(event.target.files);
+    setImage(event.target.files[0]);
   };
 
   const handleSubmit = async (event) => {
@@ -27,7 +24,12 @@ const CreatePost = () => {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("date", date);
-    formData.append("image", image.data);
+    formData.append("image", image);
+    
+    // console.log(newUser);
+      // for (const [key, value] of formData) {
+      //   console.log(key, value);
+      // }
 
     await Post.createPost(formData);
   };
@@ -35,6 +37,18 @@ const CreatePost = () => {
   return (
     <div>
       <h2>Create Post</h2>
+    
+       {/* photo preview and get photo  */}
+      {image && (
+        <div>
+          <img
+            className="post-img"
+            src={URL.createObjectURL(image)}
+            alt=" post"
+          />
+        </div>
+      )}
+      
       <form onSubmit={handleSubmit}>
         <div className="form-control">
           <label htmlFor="title">Title: </label>
@@ -64,6 +78,7 @@ const CreatePost = () => {
             type="file"
             name="image"
             id="image"
+            accept="image/*"
             onChange={handleImageChange}
             required
           />
